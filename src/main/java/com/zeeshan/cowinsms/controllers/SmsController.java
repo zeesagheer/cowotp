@@ -25,15 +25,14 @@ public class SmsController {
 
     @GetMapping(value = "/postotp")
     public ResponseEntity<Boolean> postOtp(@RequestParam String message) {
+        log.info(message);
         String regex = "[0-9]{1,6}";
         Pattern pattern = Pattern.compile(regex);
-        //Creating a Matcher object
         Matcher matcher = pattern.matcher(message);
-        System.out.println("Words in the given String: ");
-        Response response = null;
         while (matcher.find()) {
             responseSingleton.setOtp(matcher.group());
             responseSingleton.setTime(new Date().getTime());
+            log.info(responseSingleton);
         }
         return new ResponseEntity<>(Boolean.TRUE, HttpStatus.OK);
     }
