@@ -32,7 +32,7 @@ public class SmsController {
         while (matcher.find()) {
             responseSingleton.setOtp(matcher.group());
             responseSingleton.setTime(new Date().getTime());
-            log.info(responseSingleton);
+            log.info("otp updated to : {}", responseSingleton);
         }
         return new ResponseEntity<>(Boolean.TRUE, HttpStatus.OK);
     }
