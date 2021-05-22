@@ -26,7 +26,7 @@ public class SmsController {
     @GetMapping(value = "/postotp")
     public ResponseEntity<Boolean> postOtp(@RequestParam String message) {
         log.info(message);
-        String regex = "\\b\\d{1,6}\\b";
+        String regex = "\\b\\d{6}\\b";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(message);
         while (matcher.find()) {
