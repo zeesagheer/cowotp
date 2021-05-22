@@ -9,13 +9,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @RestController
 @Slf4j
 public class SmsController {
-    private static Response responseSingleton = new Response();
+    private static final Map<String, Response> map = new ConcurrentHashMap<>();
 
     @GetMapping(value = "/test")
     public ResponseEntity<String> test() {
@@ -30,17 +32,17 @@ public class SmsController {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(message);
         while (matcher.find()) {
-            responseSingleton.setOtp(matcher.group());
-            responseSingleton.setTime(new Date().getTime());
-            responseSingleton.setUserId(userId);
-            log.info("otp updated to : {}", responseSingleton);
+            Response response = map.computeIfAbsent(userId, k -> new Response());
+            response.setOtp(matcher.group());
+            response.setTime(new Date().getTime());
+            response.setUserId(userId);
+            log.info("otp updated to : {}", response);
         }
         return new ResponseEntity<>(Boolean.TRUE, HttpStatus.OK);
     }
 
-
     @GetMapping(value = "/getotp")
-    public ResponseEntity<Response> getotp() {
-        return new ResponseEntity<>(responseSingleton, HttpStatus.OK);
+    public ResponseEntity<Map<String, Response>> getOtp() {
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 }
