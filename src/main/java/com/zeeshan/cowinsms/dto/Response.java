@@ -6,5 +6,5 @@ import lombok.Data;
 public class Response {
     private String otp;
     private Long time;
-    private Long chatId;
+    private String userId;
 }
